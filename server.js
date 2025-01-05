@@ -8,7 +8,12 @@ const certificateRoutes = require("./routes/certificateRoutes");
 
 const app = express();
 // Enable CORS for all routes
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://technotran-e-verify-client.vercel.app", // Update with your frontend URL
+    methods: "GET,POST,PUT,DELETE",
+  })
+);
 
 // Middleware
 app.use(bodyParser.json());
