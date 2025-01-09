@@ -18,4 +18,7 @@ router.put("/:id", vendorController.updateVendor);
 // DELETE - Remove a vendor by ID
 router.delete("/:id", vendorController.deleteVendor);
 
+// POST - Admin login
+router.post("/login/:org", vendorController.loginVendor);
+
 module.exports = router;

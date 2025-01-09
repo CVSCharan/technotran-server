@@ -37,9 +37,13 @@ const sendOtpEmail = async (email, otp) => {
 
 // Function to save OTP record in the database
 const saveOtpRecord = async (email, otp) => {
+  // Set OTP expiration to 5 minutes from the current time
+  const expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes expiration time
+
   const otpRecord = new VerifyOtp({
     email: email,
     otp: otp,
+    expiresAt: expiresAt, // Adding the expiresAt field directly here
   });
 
   try {

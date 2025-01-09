@@ -26,10 +26,16 @@ const deleteAdmin = async (id) => {
   return await Admin.findByIdAndDelete(id); // Deletes an admin by ID
 };
 
+// Get admin by username
+const getAdminByUsername = async (username) => {
+  return await Admin.findOne({ username });
+};
+
 module.exports = {
   getAllAdmins,
   getAdminById,
   addAdmin,
   updateAdmin,
   deleteAdmin,
+  getAdminByUsername,
 };

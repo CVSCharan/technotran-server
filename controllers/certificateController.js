@@ -5,6 +5,7 @@ const {
   createCertificate,
   updateCertificate,
   deleteCertificate,
+  verifyEmail,
 } = require("../services/certificateService");
 
 // Get all certificates
@@ -76,5 +77,22 @@ exports.delete = async (req, res) => {
     res.json({ message: "Certificate deleted successfully" });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+
+// Controller to verify if an email exists
+exports.verifyEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const certificate = await verifyEmail(email); // Call the service function
+    res.status(200).json({ message: "Email exists", certificate });
+  } catch (error) {
+    if (error.message === "Email not found in our records.") {
+      return res.status(404).json({ message: error.message });
+    }
+    res
+      .status(500)
+      .json({ message: "An error occurred while verifying the email." });
   }
 };

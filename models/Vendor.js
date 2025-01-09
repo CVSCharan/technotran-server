@@ -8,6 +8,7 @@ const vendorSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    org: { type: String, required: true },
     orgPic: {
       type: String,
       required: false,

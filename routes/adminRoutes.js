@@ -18,4 +18,7 @@ router.put("/:id", adminController.updateAdmin);
 // DELETE - Remove an admin by ID
 router.delete("/:id", adminController.deleteAdmin);
 
+// POST - Admin login
+router.post("/login", adminController.loginAdmin);
+
 module.exports = router;

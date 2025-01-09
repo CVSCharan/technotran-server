@@ -26,10 +26,22 @@ const deleteVendor = async (id) => {
   return await Vendor.findByIdAndDelete(id); // Deletes a vendor by ID
 };
 
+// Get vendor by username
+const getVendorByUsername = async (name) => {
+  return await Vendor.findOne({ name });
+};
+
+// Get vendors by organization
+const getVendorsByOrg = async (org) => {
+  return await Vendor.find({ org }); // Finds all vendors belonging to the given organization
+};
+
 module.exports = {
   getAllVendors,
   getVendorById,
   addVendor,
   updateVendor,
   deleteVendor,
+  getVendorByUsername,
+  getVendorsByOrg, // Added new function
 };

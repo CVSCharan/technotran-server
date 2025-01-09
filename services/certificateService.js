@@ -24,6 +24,16 @@ const getCertificatesByEmail = async (email) => {
   return await Certificate.find({ email });
 };
 
+// Verify if an email exists in the database
+const verifyEmail = async (email) => {
+  console.log("VERIFY EMAIL: ", email);
+  const certificate = await Certificate.findOne({ email }); // Adjust field as needed
+  if (!certificate) {
+    throw new Error("Email not found in our records.");
+  }
+  return certificate;
+};
+
 // Create a new certificate
 const createCertificate = async (data) => {
   console.log("CREATE A CERTIFICATE : ", data);
@@ -54,4 +64,5 @@ module.exports = {
   deleteCertificate,
   getCertificateByCertificateId,
   getCertificatesByEmail,
+  verifyEmail,
 };
