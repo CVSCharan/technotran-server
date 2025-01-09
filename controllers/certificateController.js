@@ -1,10 +1,11 @@
 const {
   getAllCertificates,
-  getCertificateById,
+  getCertificatesByEmail,
+  getCertificateByCertificateId,
   createCertificate,
   updateCertificate,
   deleteCertificate,
-} = require("../queries/certificateQueries");
+} = require("../services/certificateService");
 
 // Get all certificates
 exports.getAll = async (req, res) => {
@@ -16,14 +17,30 @@ exports.getAll = async (req, res) => {
   }
 };
 
-// Get a certificate by ID
+// Get a certificate by Certificate ID
 exports.getById = async (req, res) => {
   try {
-    const certificate = await getCertificateById(req.params.id);
+    const certificate = await getCertificateByCertificateId(req.params.id);
     if (!certificate)
       return res.status(404).json({ error: "Certificate not found" });
     res.json(certificate);
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get a certificate by Email
+exports.getByEmail = async (req, res) => {
+  try {
+    const certificates = await getCertificatesByEmail(req.params.email);
+    if (certificates.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No certificates found for this email" });
+    }
+    res.status(200).json(certificates);
+  } catch (err) {
+    console.error("Error fetching certificates by email:", error);
     res.status(500).json({ error: err.message });
   }
 };

@@ -12,6 +12,18 @@ const getCertificateById = async (id) => {
   return await Certificate.findById(id);
 };
 
+// Get a certificate by `certificateId` field
+const getCertificateByCertificateId = async (certificateId) => {
+  console.log("GET CERTIFICATE BY CERTIFICATE ID : ", certificateId);
+  return await Certificate.findOne({ certificateId });
+};
+
+// Get all certificates by `email` field
+const getCertificatesByEmail = async (email) => {
+  console.log("GET CERTIFICATES BY EMAIL: ", email);
+  return await Certificate.find({ email });
+};
+
 // Create a new certificate
 const createCertificate = async (data) => {
   console.log("CREATE A CERTIFICATE : ", data);
@@ -40,4 +52,6 @@ module.exports = {
   createCertificate,
   updateCertificate,
   deleteCertificate,
+  getCertificateByCertificateId,
+  getCertificatesByEmail,
 };
