@@ -17,6 +17,7 @@ app.use(
     origin: [
       "https://technotran-e-verify-client.vercel.app",
       "http://localhost:3000",
+      "https://e-verify.technotran.in",
     ], // Update with your frontend URL
     methods: "GET,POST,PUT,DELETE",
   })
