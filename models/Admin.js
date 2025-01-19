@@ -18,6 +18,7 @@ const adminSchema = new mongoose.Schema(
       type: String,
       enum: ["superadmin", "admin"], // Only these values are allowed
       default: "admin",
+      required: true,
     },
   },
   {

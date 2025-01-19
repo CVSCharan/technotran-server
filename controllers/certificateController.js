@@ -6,6 +6,11 @@ const {
   updateCertificate,
   deleteCertificate,
   verifyEmail,
+  uploadCertificatesFromExcel,
+  getCertificatesByOrganization,
+  searchCertificates,
+  countCertificates,
+  getRecentCertificates,
 } = require("../services/certificateService");
 
 // Get all certificates
@@ -30,7 +35,7 @@ exports.getById = async (req, res) => {
   }
 };
 
-// Get a certificate by Email
+// Get certificates by Email
 exports.getByEmail = async (req, res) => {
   try {
     const certificates = await getCertificatesByEmail(req.params.email);
@@ -41,7 +46,60 @@ exports.getByEmail = async (req, res) => {
     }
     res.status(200).json(certificates);
   } catch (err) {
-    console.error("Error fetching certificates by email:", error);
+    console.error("Error fetching certificates by email:", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get certificates by Organization
+exports.getByOrganization = async (req, res) => {
+  const { org } = req.query;
+  try {
+    const certificates = await getCertificatesByOrganization(org);
+    if (certificates.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No certificates found for this organization" });
+    }
+    res.status(200).json(certificates);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Search certificates dynamically
+exports.search = async (req, res) => {
+  const { query } = req.query;
+  try {
+    const certificates = await searchCertificates(query);
+    if (certificates.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No matching certificates found" });
+    }
+    res.status(200).json(certificates);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Count total certificates
+exports.count = async (req, res) => {
+  try {
+    const count = await countCertificates();
+    res.status(200).json({ count });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get recently added certificates
+exports.getRecent = async (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 10;
+  try {
+    const certificates = await getRecentCertificates(limit);
+    res.status(200).json(certificates);
+  } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
@@ -80,19 +138,38 @@ exports.delete = async (req, res) => {
   }
 };
 
-// Controller to verify if an email exists
+// Verify if an email exists
 exports.verifyEmail = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const certificate = await verifyEmail(email); // Call the service function
+    const certificate = await verifyEmail(email);
     res.status(200).json({ message: "Email exists", certificate });
-  } catch (error) {
-    if (error.message === "Email not found in our records.") {
-      return res.status(404).json({ message: error.message });
+  } catch (err) {
+    if (err.message === "Email not found in our records.") {
+      return res.status(404).json({ message: err.message });
     }
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Bulk upload certificates from Excel
+exports.uploadExcel = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+
+    const uploadedCertificates = await uploadCertificatesFromExcel(
+      req.file.buffer
+    );
     res
-      .status(500)
-      .json({ message: "An error occurred while verifying the email." });
+      .status(201)
+      .json({
+        message: "Certificates uploaded successfully",
+        uploadedCertificates,
+      });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
   }
 };

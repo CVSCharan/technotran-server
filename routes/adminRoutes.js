@@ -1,24 +1,48 @@
 const express = require("express");
 const adminController = require("../controllers/adminController");
+const {
+  authenticate,
+  authorizeRole,
+} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
-// GET all admins
-router.get("/", adminController.getAllAdmins);
+// 🟢 Superadmin Only
+router.post(
+  "/",
+  authenticate,
+  authorizeRole("superadmin"),
+  adminController.addAdmin
+);
+router.delete(
+  "/:id",
+  authenticate,
+  authorizeRole("superadmin"),
+  adminController.deleteAdmin
+);
 
-// GET a single admin by ID
-router.get("/:id", adminController.getAdminById);
+// 🟡 Both Superadmin & Admin
+router.get(
+  "/",
+  authenticate,
+  authorizeRole("superadmin", "admin"),
+  adminController.getAllAdmins
+);
+router.get(
+  "/:id",
+  authenticate,
+  authorizeRole("superadmin", "admin"),
+  adminController.getAdminById
+);
+router.put(
+  "/:id",
+  authenticate,
+  authorizeRole("superadmin", "admin"),
+  adminController.updateAdmin
+);
 
-// POST - Add a new admin
-router.post("/", adminController.addAdmin);
-
-// PUT - Update an admin by ID
-router.put("/:id", adminController.updateAdmin);
-
-// DELETE - Remove an admin by ID
-router.delete("/:id", adminController.deleteAdmin);
-
-// POST - Admin login
+// 🔹 Login & Logout (No authentication needed)
 router.post("/login", adminController.loginAdmin);
+router.post("/logout", adminController.logoutAdmin);
 
 module.exports = router;

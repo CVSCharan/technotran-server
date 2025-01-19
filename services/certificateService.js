@@ -1,3 +1,4 @@
+const XLSX = require("xlsx");
 const Certificate = require("../models/Certificate");
 
 // Get all certificates
@@ -8,13 +9,13 @@ const getAllCertificates = async () => {
 
 // Get a single certificate by ID
 const getCertificateById = async (id) => {
-  console.log("GET ALL CERTIFICATES BY ID : ", id);
+  console.log("GET CERTIFICATE BY ID: ", id);
   return await Certificate.findById(id);
 };
 
 // Get a certificate by `certificateId` field
 const getCertificateByCertificateId = async (certificateId) => {
-  console.log("GET CERTIFICATE BY CERTIFICATE ID : ", certificateId);
+  console.log("GET CERTIFICATE BY CERTIFICATE ID: ", certificateId);
   return await Certificate.findOne({ certificateId });
 };
 
@@ -27,7 +28,7 @@ const getCertificatesByEmail = async (email) => {
 // Verify if an email exists in the database
 const verifyEmail = async (email) => {
   console.log("VERIFY EMAIL: ", email);
-  const certificate = await Certificate.findOne({ email }); // Adjust field as needed
+  const certificate = await Certificate.findOne({ email });
   if (!certificate) {
     throw new Error("Email not found in our records.");
   }
@@ -36,14 +37,14 @@ const verifyEmail = async (email) => {
 
 // Create a new certificate
 const createCertificate = async (data) => {
-  console.log("CREATE A CERTIFICATE : ", data);
+  console.log("CREATE A CERTIFICATE: ", data);
   const certificate = new Certificate(data);
   return await certificate.save();
 };
 
 // Update a certificate by ID
 const updateCertificate = async (id, data) => {
-  console.log("UPDATE A CERTIFICATE : ", id);
+  console.log("UPDATE A CERTIFICATE: ", id);
   return await Certificate.findByIdAndUpdate(id, data, {
     new: true,
     runValidators: true,
@@ -52,8 +53,57 @@ const updateCertificate = async (id, data) => {
 
 // Delete a certificate by ID
 const deleteCertificate = async (id) => {
-  console.log("DELETE A CERTIFICATE : ", id);
+  console.log("DELETE A CERTIFICATE: ", id);
   return await Certificate.findByIdAndDelete(id);
+};
+
+// Bulk upload certificates from an Excel file
+const uploadCertificatesFromExcel = async (fileBuffer) => {
+  console.log("UPLOAD CERTIFICATES FROM EXCEL");
+  const workbook = XLSX.read(fileBuffer, { type: "buffer" });
+  const sheetName = workbook.SheetNames[0];
+  const data = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
+
+  try {
+    const certificates = await Certificate.insertMany(data, { ordered: false });
+    return certificates;
+  } catch (error) {
+    if (error.code === 11000) {
+      throw new Error("Duplicate certificate IDs found in the Excel file.");
+    }
+    throw new Error("Error processing the Excel file.");
+  }
+};
+
+// Get certificates by organization
+const getCertificatesByOrganization = async (org) => {
+  console.log("GET CERTIFICATES BY ORGANIZATION: ", org);
+  return await Certificate.find({ org });
+};
+
+// Search certificates dynamically
+const searchCertificates = async (query) => {
+  console.log("SEARCH CERTIFICATES WITH QUERY: ", query);
+  const searchCriteria = {
+    $or: [
+      { name: { $regex: query, $options: "i" } },
+      { email: { $regex: query, $options: "i" } },
+      { rollNo: { $regex: query, $options: "i" } },
+    ],
+  };
+  return await Certificate.find(searchCriteria);
+};
+
+// Count total certificates
+const countCertificates = async () => {
+  console.log("COUNT CERTIFICATES");
+  return await Certificate.countDocuments();
+};
+
+// Get recently added certificates
+const getRecentCertificates = async (limit = 10) => {
+  console.log(`GET RECENT CERTIFICATES, LIMIT: ${limit}`);
+  return await Certificate.find().sort({ createdAt: -1 }).limit(limit);
 };
 
 module.exports = {
@@ -65,4 +115,9 @@ module.exports = {
   getCertificateByCertificateId,
   getCertificatesByEmail,
   verifyEmail,
+  uploadCertificatesFromExcel,
+  getCertificatesByOrganization,
+  searchCertificates,
+  countCertificates,
+  getRecentCertificates,
 };

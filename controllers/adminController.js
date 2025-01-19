@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const adminService = require("../services/adminService");
+const jwt = require("jsonwebtoken");
 
 // Get all admins
 const getAllAdmins = async (req, res) => {
@@ -91,10 +92,39 @@ const loginAdmin = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.status(200).json({ message: "Login successful", admin });
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: admin._id, role: admin.role }, // Include role for authorization
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Set HTTP-only cookie
+    res.cookie("admin_token", token, {
+      httpOnly: true, // Prevents JavaScript access (secure against XSS attacks)
+      secure: process.env.NODE_ENV === "production", // Use HTTPS in production
+      sameSite: "Strict", // Prevent CSRF attacks
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      userId: admin._id,
+      username: admin.username,
+      role: admin.role,
+      profilePic: admin.profilePic,
+      email: admin.email,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Logout admin by clearing the token
+const logoutAdmin = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
 };
 
 module.exports = {
@@ -104,4 +134,5 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   loginAdmin,
+  logoutAdmin,
 };

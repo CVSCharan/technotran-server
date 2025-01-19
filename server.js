@@ -20,6 +20,7 @@ app.use(
       "https://e-verify.technotran.in",
     ], // Update with your frontend URL
     methods: "GET,POST,PUT,DELETE",
+    credentials: true,
   })
 );
 
