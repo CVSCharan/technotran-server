@@ -44,5 +44,6 @@ router.put(
 // 🔹 Login & Logout (No authentication needed)
 router.post("/login", adminController.loginAdmin);
 router.post("/logout", adminController.logoutAdmin);
+router.post("/reset-password", adminController.resetPassword);
 
 module.exports = router;

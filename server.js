@@ -3,6 +3,7 @@ const PORT = process.env.PORT || 3000;
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
 const certificateRoutes = require("./routes/certificateRoutes");
 const otpRoutes = require("./routes/otpRoutes");
@@ -26,6 +27,7 @@ app.use(
 
 // Middleware
 app.use(bodyParser.json());
+app.use(cookieParser()); // ✅ Enables reading JWT from cookies
 
 // Connect to Database
 connectDB();

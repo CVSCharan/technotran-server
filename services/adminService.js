@@ -31,6 +31,11 @@ const getAdminByUsername = async (username) => {
   return await Admin.findOne({ username });
 };
 
+// Get admin by email
+const getAdminByEmail = async (email) => {
+  return await Admin.findOne({ email });
+};
+
 module.exports = {
   getAllAdmins,
   getAdminById,
@@ -38,4 +43,5 @@ module.exports = {
   updateAdmin,
   deleteAdmin,
   getAdminByUsername,
+  getAdminByEmail,
 };
