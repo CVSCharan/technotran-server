@@ -103,7 +103,7 @@ const loginAdmin = async (req, res) => {
     res.cookie("admin_token", token, {
       httpOnly: true, // Prevents JavaScript access (secure against XSS attacks)
       secure: process.env.NODE_ENV === "production", // Use HTTPS in production
-      sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+      sameSite: "None",
       maxAge: 60 * 60 * 1000, // 1 hour
     });
 
