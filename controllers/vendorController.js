@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const vendorService = require("../services/vendorService");
-const Vendor = require("../models/Vendor");
+const jwt = require("jsonwebtoken");
 
 // Get all vendors
 const getAllVendors = async (req, res) => {
@@ -75,24 +75,17 @@ const deleteVendor = async (req, res) => {
   }
 };
 
-// Admin login
+// Vendor login
 const loginVendor = async (req, res) => {
-  const { name, password } = req.body;
-  const { org } = req.params;
+  const { username, password } = req.body;
+  const { orgData } = req.params; // Get the selected vendor (organization)
 
   try {
-    // Query all vendors for the organization
-    console.log(org);
-    const vendors = await vendorService.getVendorsByOrg(org);
-
-    if (!vendors || vendors.length === 0) {
-      return res
-        .status(404)
-        .json({ message: "No vendors found for the organization" });
-    }
-
-    // Find the specific vendor by username in the fetched list
-    const vendor = vendors.find((vendor) => vendor.name === name);
+    // Find the vendor based on the orgName and username
+    const vendor = await vendorService.getVendorByOrgAndUsername(
+      orgData,
+      username
+    );
 
     if (!vendor) {
       return res.status(404).json({ message: "Vendor not found" });
@@ -104,10 +97,39 @@ const loginVendor = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    res.status(200).json({ message: "Login successful", vendor });
+    // Generate JWT token
+    const token = jwt.sign(
+      { id: vendor._id, role: vendor.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    // Set HTTP-only cookie for security
+    res.cookie("vendor_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "None",
+      maxAge: 60 * 60 * 1000, // 1 hour
+    });
+
+    res.status(200).json({
+      message: "Login successful",
+      token,
+      id: vendor._id,
+      username: vendor.name,
+      email: vendor.email,
+      org: vendor.org,
+      orgPic: vendor.orgPic,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+// Logout vendor by clearing the token
+const logoutVendor = (req, res) => {
+  res.clearCookie("token");
+  res.json({ message: "Logged out successfully" });
 };
 
 module.exports = {
@@ -117,4 +139,5 @@ module.exports = {
   updateVendor,
   deleteVendor,
   loginVendor,
+  logoutVendor,
 };

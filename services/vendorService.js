@@ -36,6 +36,11 @@ const getVendorsByOrg = async (org) => {
   return await Vendor.find({ org }); // Finds all vendors belonging to the given organization
 };
 
+const getVendorByOrgAndUsername = async (orgName, username) => {
+  console.log("VENDOR BY ORG & USERNAME", orgName, username);
+  return await Vendor.findOne({ org: orgName, name: username });
+};
+
 module.exports = {
   getAllVendors,
   getVendorById,
@@ -43,5 +48,6 @@ module.exports = {
   updateVendor,
   deleteVendor,
   getVendorByUsername,
-  getVendorsByOrg, // Added new function
+  getVendorsByOrg,
+  getVendorByOrgAndUsername,
 };

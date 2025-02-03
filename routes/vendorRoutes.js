@@ -1,5 +1,9 @@
 const express = require("express");
 const vendorController = require("../controllers/vendorController");
+const {
+  authenticate,
+  authorizeRole,
+} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -19,6 +23,6 @@ router.put("/:id", vendorController.updateVendor);
 router.delete("/:id", vendorController.deleteVendor);
 
 // POST - Admin login
-router.post("/login/:org", vendorController.loginVendor);
+router.post("/login/:orgData", vendorController.loginVendor);
 
 module.exports = router;

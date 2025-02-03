@@ -117,10 +117,12 @@ const uploadCertificatesFromExcel = async (fileBuffer) => {
   }
 };
 
-// Get certificates by organization
+// Get certificates by organization with case-insensitive match
 const getCertificatesByOrganization = async (org) => {
-  console.log("GET CERTIFICATES BY ORGANIZATION: ", org);
-  return await Certificate.find({ org });
+  console.log("GET CERTIFICATES BY ORGANIZATION:", org);
+  return await Certificate.find({
+    org: { $regex: `^${org}$`, $options: "i" }, // Case-insensitive match
+  });
 };
 
 // Search certificates dynamically

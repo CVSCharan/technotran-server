@@ -53,7 +53,10 @@ exports.getByEmail = async (req, res) => {
 
 // Get certificates by Organization
 exports.getByOrganization = async (req, res) => {
-  const { org } = req.query;
+  let { org } = req.params;
+  org = decodeURIComponent(org.trim()); // Decode and remove extra spaces
+  console.log("Decoded Org:", org);
+
   try {
     const certificates = await getCertificatesByOrganization(org);
     if (certificates.length === 0) {
@@ -163,12 +166,10 @@ exports.uploadExcel = async (req, res) => {
     const uploadedCertificates = await uploadCertificatesFromExcel(
       req.file.buffer
     );
-    res
-      .status(201)
-      .json({
-        message: "Certificates uploaded successfully",
-        uploadedCertificates,
-      });
+    res.status(201).json({
+      message: "Certificates uploaded successfully",
+      uploadedCertificates,
+    });
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

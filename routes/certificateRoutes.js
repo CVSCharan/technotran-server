@@ -11,7 +11,7 @@ router.get("/", certificateController.getAll); // Fetch all certificates
 router.get("/recent", certificateController.getRecent); // Fetch recently added certificates
 router.get("/count", certificateController.count); // Get count of all certificates
 router.get("/search", certificateController.search); // Search certificates dynamically
-router.get("/organization", certificateController.getByOrganization); // Fetch certificates by organization
+router.get("/:org", certificateController.getByOrganization); // Fetch certificates by organization
 router.get("/:id", certificateController.getById); // Fetch certificate by ID
 router.get("/email/:email", certificateController.getByEmail); // Fetch certificates by email
 
@@ -24,6 +24,10 @@ router.delete("/:id", certificateController.delete); // Delete a certificate by 
 router.post("/verify-email", certificateController.verifyEmail);
 
 // Route for bulk upload via Excel
-router.post("/upload", upload.single("file"), certificateController.uploadExcel);
+router.post(
+  "/upload",
+  upload.single("file"),
+  certificateController.uploadExcel
+);
 
 module.exports = router;
