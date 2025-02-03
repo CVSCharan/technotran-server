@@ -25,4 +25,7 @@ router.delete("/:id", vendorController.deleteVendor);
 // POST - Admin login
 router.post("/login/:orgData", vendorController.loginVendor);
 
+// POST - Reset Password by email
+router.post("/reset-password", vendorController.resetPassword);
+
 module.exports = router;

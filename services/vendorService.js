@@ -41,6 +41,11 @@ const getVendorByOrgAndUsername = async (orgName, username) => {
   return await Vendor.findOne({ org: orgName, name: username });
 };
 
+// Get admin by email
+const getVendorByEmail = async (email) => {
+  return await Vendor.findOne({ email });
+};
+
 module.exports = {
   getAllVendors,
   getVendorById,
@@ -50,4 +55,5 @@ module.exports = {
   getVendorByUsername,
   getVendorsByOrg,
   getVendorByOrgAndUsername,
+  getVendorByEmail,
 };

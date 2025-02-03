@@ -132,6 +132,26 @@ const logoutVendor = (req, res) => {
   res.json({ message: "Logged out successfully" });
 };
 
+// Reset Password
+const resetPassword = async (req, res) => {
+  const { email, newPassword } = req.body;
+
+  try {
+    const admin = await vendorService.getVendorByEmail(email);
+    if (!admin) {
+      return res.status(404).json({ message: "Vendor not found" });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    admin.password = hashedPassword;
+    await admin.save();
+
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getAllVendors,
   getVendorById,
@@ -140,4 +160,5 @@ module.exports = {
   deleteVendor,
   loginVendor,
   logoutVendor,
+  resetPassword,
 };
