@@ -12,7 +12,7 @@ router.get("/recent", certificateController.getRecent); // Fetch recently added 
 router.get("/count", certificateController.count); // Get count of all certificates
 router.get("/search", certificateController.search); // Search certificates dynamically
 router.get("/:org", certificateController.getByOrganization); // Fetch certificates by organization
-router.get("/:id", certificateController.getById); // Fetch certificate by ID
+router.get("/id/:id", certificateController.getById); // Fetch certificate by ID
 router.get("/email/:email", certificateController.getByEmail); // Fetch certificates by email
 
 // Certificate creation, updates, and deletions
