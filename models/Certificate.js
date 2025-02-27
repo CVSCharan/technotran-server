@@ -9,6 +9,7 @@ const certificateSchema = new mongoose.Schema(
     startDate: { type: Date, default: Date.now },
     issueDate: { type: Date, default: Date.now },
     certificateId: { type: String, required: true, unique: true },
+    certificateImgSrc: { type: String, require: false, default: "" },
     rollNo: { type: String, required: true },
     email: { type: String, required: true },
     org: { type: String, required: true },

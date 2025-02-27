@@ -94,8 +94,11 @@ const uploadCertificatesFromExcel = async (fileBuffer) => {
   const formattedData = rawData.map((row) => ({
     name: row["Name"]?.trim(),
     type: row["Type"]?.trim(),
+    program: row["Program"]?.trim(),
+    department: row["Department"]?.trim(),
     issueDate: parseExcelDate(row["Issue Date"]), // Fix here
     certificateId: row["Certificate ID"]?.trim(),
+    certificateImgSrc: row["Certificate Img URL"]?.trim(),
     rollNo: row["Roll No."]?.trim(),
     email: row["Email"]?.trim(),
     org: row["Org"]?.trim(),
@@ -107,7 +110,7 @@ const uploadCertificatesFromExcel = async (fileBuffer) => {
     const certificates = await Certificate.insertMany(formattedData, {
       ordered: false,
     });
-    console.log("Inserted Certificates:", certificates);
+    console.log("Inserted Certificates:", certificates.length);
     return certificates;
   } catch (error) {
     if (error.code === 11000) {

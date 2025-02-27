@@ -1,9 +1,5 @@
 const express = require("express");
 const vendorController = require("../controllers/vendorController");
-const {
-  authenticate,
-  authorizeRole,
-} = require("../middlewares/authMiddleware");
 
 const router = express.Router();
 
@@ -22,7 +18,7 @@ router.put("/:id", vendorController.updateVendor);
 // DELETE - Remove a vendor by ID
 router.delete("/:id", vendorController.deleteVendor);
 
-// POST - Admin login
+// POST - Vendor login
 router.post("/login/:orgData", vendorController.loginVendor);
 
 // POST - Reset Password by email
