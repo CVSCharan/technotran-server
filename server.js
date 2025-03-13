@@ -18,7 +18,10 @@ app.use(
     origin: [
       "https://technotran-e-verify-client.vercel.app",
       "http://localhost:3000",
+      "http://localhost:3001",
       "https://e-verify.technotran.in",
+      "https://vendor-portal.technotran.in",
+      "https://admin-portal.technotran.in",
       "https://e-verify-portal-frontend-production.up.railway.app", // Added new frontend URL
     ], // Update with your frontend URL
     methods: "GET,POST,PUT,DELETE",
