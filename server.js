@@ -22,6 +22,9 @@ app.use(
       "https://e-verify.technotran.in",
       "https://vendor-portal.technotran.in",
       "https://admin-portal.technotran.in",
+      "https://e-verify.robomonk.ai",
+      "https://vendor-portal.robomonk.ai",
+      "https://admin-portal.robomonk.ai",
       "https://e-verify-portal-frontend-production.up.railway.app", // Added new frontend URL
     ], // Update with your frontend URL
     methods: "GET,POST,PUT,DELETE",
