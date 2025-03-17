@@ -96,6 +96,7 @@ const uploadCertificatesFromExcel = async (fileBuffer) => {
     type: row["Type"]?.trim(),
     program: row["Program"]?.trim(),
     department: row["Department"]?.trim(),
+    startDate: parseExcelDate(row["Issue Date"]),
     issueDate: parseExcelDate(row["Issue Date"]), // Fix here
     certificateId: row["Certificate ID"]?.trim(),
     certificateImgSrc: row["Certificate Img URL"]?.trim(),
